@@ -1,0 +1,980 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Samlax Kindergarten | School Management</title>
+<style>
+:root{--navy:#12365c;--blue:#1768a8;--pale:#edf4fb;--ink:#24364a;--muted:#748397;--line:#dce5ee;--white:#fff;--green:#168653;--red:#bd3e37}
+*{box-sizing:border-box}
+body{margin:0;background:#f3f6fa;color:var(--ink);font-family:Arial,Helvetica,sans-serif}
+button,input,select,textarea{font:inherit}
+button{cursor:pointer;border:0;border-radius:7px;padding:10px 14px;font-weight:700;font-size:12px}
+.primary{background:var(--blue);color:white}.primary:hover{background:var(--navy)}
+.secondary{background:#eaf1f8;color:var(--navy)}
+.danger{background:#fff0ef;color:var(--red)}
+.success{background:#e7f6ed;color:var(--green)}
+.small{padding:6px 9px;margin:2px;font-size:11px}
+input,select,textarea{width:100%;padding:10px;border:1px solid #ccd7e3;border-radius:7px;background:white;color:var(--ink);font-size:13px}
+input:focus,select:focus,textarea:focus{outline:2px solid #c7e0fa;border-color:#5597d0}
+label{display:block;font-size:12px;font-weight:bold;margin-bottom:6px;color:#42566d}
+.field{margin-bottom:14px}
+h1,h2,h3,p{margin-top:0}
+#loginScreen{min-height:100vh;display:none;align-items:center;justify-content:center;padding:20px;background:linear-gradient(135deg,#102f50,#1c6cae)}
+.login-card{background:white;width:min(420px,100%);padding:30px;border-radius:16px;box-shadow:0 15px 55px #071b3080}
+.login-brand{text-align:center;margin-bottom:25px}
+.login-logo{width:76px;height:76px;object-fit:contain;border-radius:14px;background:#edf4fb;margin-bottom:12px}
+.login-brand h1{font-size:22px;color:var(--navy);margin-bottom:6px}
+.login-brand p{font-size:12px;color:var(--muted)}
+.login-card button{width:100%;margin-top:8px;padding:13px}
+.login-note{font-size:11px;color:var(--muted);line-height:1.6;margin-top:18px}
+#app{display:none}
+header{background:linear-gradient(110deg,#10365f,#1765a8);color:white;padding:15px 22px;display:flex;align-items:center;justify-content:space-between;gap:15px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:12px}
+.brand img{width:48px;height:48px;object-fit:contain;background:white;border-radius:9px;padding:3px}
+.brand h1{font-size:19px;margin:0 0 4px}
+.brand p{font-size:11px;margin:0;opacity:.9}
+.header-right{text-align:right;font-size:11px;line-height:1.6}
+.app-layout{display:flex;min-height:calc(100vh - 78px)}
+aside{width:225px;flex-shrink:0;background:white;border-right:1px solid var(--line);padding:14px 10px}
+.nav-title{font-size:10px;font-weight:bold;color:#91a0b1;padding:13px 12px 6px;text-transform:uppercase;letter-spacing:1px}
+nav button{display:block;width:100%;text-align:left;background:transparent;color:#43566b;margin:2px 0;padding:10px 12px}
+nav button.active,nav button:hover{background:#eaf2fa;color:var(--navy)}
+main{padding:24px;width:calc(100% - 225px);min-width:0}
+h2{font-size:23px;color:var(--navy);margin-bottom:6px}
+.subtitle{font-size:13px;color:var(--muted);margin-bottom:20px}
+.cards{display:grid;grid-template-columns:repeat(auto-fit,minmax(155px,1fr));gap:13px;margin-bottom:18px}
+.stat{background:white;border:1px solid var(--line);border-radius:11px;padding:17px}
+.stat span{font-size:12px;color:var(--muted)}
+.stat strong{display:block;color:var(--navy);font-size:22px;margin-top:8px;overflow-wrap:anywhere}
+.panel{background:white;border:1px solid var(--line);border-radius:11px;padding:18px;margin-bottom:17px;box-shadow:0 2px 8px #17395708}
+.panel-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap;margin-bottom:14px}
+.panel h3{font-size:15px;color:var(--navy);margin:0}
+.toolbar{display:flex;gap:7px;align-items:center;flex-wrap:wrap}
+.toolbar input{max-width:260px}
+.grid-form{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:0 14px}
+.full{grid-column:1/-1}
+.form-section h4{margin:8px 0 0;padding:7px 10px;background:var(--pale);color:var(--navy);font-size:13px;border-radius:6px}
+.table-wrap{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-size:12px;min-width:620px}
+th{background:#eff4f9;text-align:left;color:#38516b;font-size:11px}
+th,td{padding:10px 9px;border-bottom:1px solid #e7edf3;vertical-align:middle}
+tr:hover td{background:#fafcff}
+.empty{text-align:center;padding:28px;color:#8392a3}
+.badge{display:inline-block;border-radius:20px;background:#e9f2fb;color:#225d91;padding:4px 8px;font-size:10px}
+.modal{display:none;position:fixed;inset:0;background:#0c203a99;z-index:20;align-items:center;justify-content:center;padding:14px}
+.modal.show{display:flex}
+.modal-box{background:white;border-radius:13px;width:min(760px,100%);max-height:93vh;overflow:auto;padding:22px}
+.modal-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:18px}
+.modal-head h3{color:var(--navy);margin:0}
+.close{background:#edf1f5}
+.photo-preview{width:115px;height:130px;object-fit:cover;border:1px solid #cbd6e1;border-radius:8px;background:#f3f6fa;display:block;margin-top:10px}
+.logo-preview{width:100px;height:100px;object-fit:contain;background:#edf4fb;border:1px solid var(--line);border-radius:10px;padding:5px}
+.notice{background:#edf5fc;border-radius:8px;padding:12px;font-size:12px;color:#315879;line-height:1.6;margin-bottom:15px}
+.muted{color:var(--muted);font-size:12px}
+footer{text-align:center;color:#8493a3;font-size:11px;padding:20px}
+#toast{position:fixed;bottom:18px;right:18px;background:#173f68;color:white;padding:12px 16px;border-radius:8px;display:none;z-index:50;font-size:12px;max-width:320px}
+@media(max-width:760px){
+ .app-layout{display:block}aside{width:100%;border:0;border-bottom:1px solid var(--line)}
+ nav{display:flex;overflow-x:auto;gap:3px}nav button{white-space:nowrap;width:auto}
+ main{width:100%;padding:14px}.grid-form{grid-template-columns:1fr}.full{grid-column:auto}
+ header{padding:13px}.header-right{text-align:left}
+}
+@media print{
+ header,aside,.no-print,footer,#toast{display:none!important}
+ main{width:100%;padding:0}.panel{box-shadow:none;border:0}
+ .table-wrap{overflow:visible}table{min-width:0;font-size:10px}
+ body{background:white}
+}
+</style>
+</head>
+<body>
+
+<!-- LOGIN -->
+<section id="loginScreen">
+ <div class="login-card">
+  <div class="login-brand">
+   <img id="loginLogo" class="login-logo" alt="School logo">
+   <h1>SAMLAX KINDERGARTEN</h1>
+   <p>TRAIN UP A CHILD</p>
+  </div>
+  <form id="loginForm" onsubmit="login(event)">
+   <div class="field"><label>Administrator Username</label><input id="loginUser" value="Admin" autocomplete="username" required></div>
+   <div class="field"><label>Password</label><input id="loginPassword" type="password" autocomplete="current-password" required></div>
+   <button class="primary" type="submit">Secure Administrator Login</button>
+  </form>
+  <div class="login-note">Authorised school administration only. This system is locked with the administrator password.</div>
+  <div id="loginError" style="color:#bd3e37;font-size:12px;margin-top:12px"></div>
+ </div>
+</section>
+
+<!-- APPLICATION -->
+<div id="app">
+<header>
+ <div class="brand">
+  <img id="headerLogo" alt="School logo" title="Click to change the school logo" style="cursor:pointer" onclick="document.getElementById('quickLogo').click()"><input id="quickLogo" type="file" accept="image/*" style="display:none" onchange="handleLogo(event)">
+  <div><h1 id="headerSchool">SAMLAX KINDERGARTEN</h1><p id="headerMotto">TRAIN UP A CHILD</p></div>
+ </div>
+ <div class="header-right">
+  <div id="headerDate"></div>
+  <div>OFFLINE SCHOOL MANAGEMENT</div>
+  <button id="lockButton" class="secondary small" onclick="logout()" style="display:none">Lock System</button>
+ </div>
+</header>
+
+<div class="app-layout">
+<aside class="no-print">
+ <nav id="navigation">
+  <div class="nav-title">Main</div>
+  <button class="active" data-page="dashboard">▦ Dashboard</button>
+  <button data-page="students">♙ Students</button>
+  <button data-page="guardians">♧ Parents & Guardians</button>
+  <button data-page="classes">▤ Classes & Streams</button>
+  <div class="nav-title">Academic</div>
+  <button data-page="attendance">✓ Attendance</button>
+  <button data-page="staff">♙ Staff & Teachers</button>
+  <button data-page="subjects">▣ Subjects</button>
+  <button data-page="exams">▤ Examinations</button>
+  <button data-page="results">★ Marks & Results</button>
+  <div class="nav-title">Finance</div>
+  <button data-page="invoices">▤ School Fees</button>
+  <button data-page="payments">▣ Payments & Receipts</button>
+  <button data-page="expenses">↗ Expenses</button>
+  <button data-page="payroll">▣ Payroll</button>
+  <div class="nav-title">Operations</div>
+  <button data-page="inventory">▤ Inventory</button>
+  <button data-page="transport">▣ Transport</button>
+  <button data-page="meals">♨ Meals</button>
+  <div class="nav-title">Administration</div>
+  <button data-page="photoIntake">▧ Staff Photo Submissions</button>
+  <button data-page="reports">▥ Reports & Printing</button>
+  <button data-page="settings">⚙ School Settings</button>
+  <button data-page="security">🔐 Security</button>
+  <button data-page="backup">⇩ Backup & Restore</button>
+ </nav>
+</aside>
+<main id="main"></main>
+</div>
+<footer>Samlax Kindergarten · Train Up a Child · Private Offline School System</footer>
+</div>
+
+<div class="modal" id="modal">
+ <div class="modal-box">
+  <div class="modal-head"><h3 id="modalTitle">Add Record</h3><button class="close" onclick="closeModal()">✕</button></div>
+  <form id="recordForm" onsubmit="saveRecord(event)">
+   <div id="formFields" class="grid-form"></div>
+   <div class="toolbar" style="justify-content:flex-end;margin-top:12px">
+    <button type="button" class="secondary" onclick="closeModal()">Cancel</button>
+    <button type="submit" class="primary">Save Record</button>
+   </div>
+  </form>
+ </div>
+</div>
+<div id="toast"></div>
+
+<script>
+"use strict";
+
+/* =====================================================
+   SAMLAX KINDERGARTEN PROFESSIONAL EDITION
+   Local-only application. Optional password with encrypted browser data.
+   ===================================================== */
+
+const DEFAULT_USER="Admin";
+const STORAGE_KEY="SAMLAX_ENCRYPTED_SCHOOL_V3";
+const LOGO_KEY="SAMLAX_SCHOOL_LOGO";
+const PBKDF2_ROUNDS=250000;
+const MAX_PHOTO_BYTES=3*1024*1024;
+let db=null;
+let activePassword=null;
+let currentPage="dashboard";
+let editing=null;
+let photoQueue=[];
+
+/* STUDENT FORM SECTIONS (heading appears above the named field) */
+const studentSections={
+ studentType:["Admission Details",""],
+ firstName:["Child's Personal Details",""],
+ guardian:["Parents, Guardians and Contacts",""],
+ bloodGroup:["Health and Medical Information",""],
+ toiletTrained:["Development and Previous School",""],
+ transport:["Transport and Agreements",""],
+ academicYear:["Continuing Student Update","continuing"],
+ notes:["Other",""]
+};
+/* DATA STRUCTURE */
+const schema={
+ students:{title:"Students",singular:"Student",
+ tableFields:["admissionNo","firstName","lastName","gender","dob","className","studentType"],
+ printFields:["admissionNo","firstName","lastName","gender","dob","className","studentType","guardian","guardianPhone"],
+ fields:{
+  studentType:["Student Type","select",["New Admission","Continuing Student"]],
+  admissionNo:["Admission Number","text"],admissionDate:["Admission Date","date"],
+  className:["Class","class"],stream:["Stream","text"],
+  programme:["Programme / Attendance","select",["Full-day","Half-day","Daycare only"],"new"],
+  termOfEntry:["Term of Entry","select",["Term 1","Term 2","Term 3"],"new"],
+  status:["Status","select",["Active","Inactive","Transferred","Graduated"]],
+  firstName:["First Name","text"],lastName:["Last Name","text"],otherNames:["Other Names","text",null,"new"],
+  gender:["Gender","select",["Male","Female"]],dob:["Date of Birth","date"],
+  placeOfBirth:["Place of Birth (District / Village)","text",null,"new"],
+  birthCertNo:["Birth Certificate Number","text",null,"new"],
+  nationality:["Nationality","text",null,"new"],tribe:["Tribe (optional)","text",null,"new"],religion:["Religion","text",null,"new"],
+  homeLanguage:["Language Spoken at Home","text",null,"new"],
+  photo:["Student Photograph","image"],
+  guardian:["Parent / Guardian","text"],guardianPhone:["Guardian Phone","tel"],
+  guardianOccupation:["Guardian Occupation / Workplace","text",null,"new"],
+  guardianNIN:["Guardian National ID Number (NIN)","text",null,"new"],
+  fatherName:["Father's Name","text",null,"new"],fatherPhone:["Father's Phone","tel",null,"new"],
+  motherName:["Mother's Name","text",null,"new"],motherPhone:["Mother's Phone","tel",null,"new"],
+  livesWith:["Child Lives With","select",["Both parents","Mother","Father","Guardian","Other relative"],"new"],
+  address:["Home Address","text"],
+  siblingsInSchool:["Brothers / Sisters in This School","text",null,"new"],
+  emergencyName:["Emergency Contact Name","text"],emergencyPhone:["Emergency Contact Phone","tel"],
+  emergencyRelation:["Emergency Contact Relationship","text"],
+  pickupPersons:["Persons Allowed to Pick Up the Child (names and phones)","textarea"],
+  bloodGroup:["Blood Group","select",["A+","A-","B+","B-","AB+","AB-","O+","O-","Unknown"],"new"],
+  allergies:["Allergies (food, medicine, other)","text"],
+  medicalConditions:["Medical Conditions (e.g. asthma, sickle cell, epilepsy)","text"],
+  medications:["Regular Medication","text",null,"new"],
+  immunisation:["Immunisation Status","select",["Up to date","Incomplete","Not known"],"new"],
+  specialNeeds:["Special Needs / Disability / Extra Support","text"],
+  clinic:["Family Doctor / Clinic and Phone","text",null,"new"],
+  medicalConsent:["Parent Consents to Emergency Medical Treatment","select",["Yes","No"],"new"],
+  toiletTrained:["Toilet Trained","select",["Yes","Partly","No"],"new"],
+  dietaryNeeds:["Dietary Needs / Feeding Notes","text"],
+  previousSchool:["Previous School / Daycare","text",null,"new"],
+  reasonForLeaving:["Reason for Leaving Previous School","text",null,"new"],
+  transport:["Transport","select",["Parent drops and picks","School transport","Other arrangement"]],
+  pickupPoint:["Pick-up / Drop-off Point","text"],
+  rulesAccepted:["Parent Has Read and Accepted School Rules","select",["Yes","No"],"new"],
+  feeDeposit:["50% Fees Deposit","select",["Paid","Part paid","Not paid"],"new"],
+  academicYear:["Academic Year","text",null,"continuing"],
+  currentTerm:["Current Term","select",["Term 1","Term 2","Term 3"],"continuing"],
+  detailsConfirmedOn:["Parent Details Re-confirmed On","date",null,"continuing"],
+  progressRemarks:["Progress and Behaviour Remarks","textarea",null,"continuing"],
+  notes:["Notes","textarea"]
+ }},
+ guardians:{title:"Parents & Guardians",singular:"Guardian",fields:{
+  name:["Full Name","text"],relationship:["Relationship","select",["Mother","Father","Guardian","Other"]],
+  phone:["Phone Number","tel"],email:["Email","email"],address:["Address","text"],
+  studentAdmissionNo:["Student Admission Number","text"],notes:["Notes","textarea"]
+ }},
+ classes:{title:"Classes & Streams",singular:"Class",fields:{
+  name:["Class Name","text"],stream:["Stream","text"],teacher:["Class Teacher","text"],
+  capacity:["Student Capacity","number"],room:["Classroom","text"],
+  academicYear:["Academic Year","text"],status:["Status","select",["Active","Inactive"]]
+ }},
+ attendance:{title:"Attendance",singular:"Attendance Record",fields:{
+  date:["Date","date"],studentAdmissionNo:["Student Admission Number","text"],studentName:["Student Name","text"],
+  className:["Class","class"],status:["Attendance","select",["Present","Absent","Late","Sick","Excused"]],remarks:["Remarks","text"]
+ }},
+ staff:{title:"Staff & Teachers",singular:"Staff Member",fields:{
+  staffNo:["Staff Number","text"],name:["Full Name","text"],role:["Job Title","text"],phone:["Phone","tel"],
+  email:["Email","email"],address:["Address","text"],dateJoined:["Date Joined","date"],
+  salary:["Monthly Salary (UGX)","number"],status:["Status","select",["Active","Inactive"]]
+ }},
+ subjects:{title:"Subjects",singular:"Subject",fields:{
+  name:["Subject Name","text"],className:["Class","class"],teacher:["Teacher","text"],description:["Description","textarea"]
+ }},
+ exams:{title:"Examinations",singular:"Examination",fields:{
+  name:["Examination Name","text"],term:["Term","select",["Term 1","Term 2","Term 3"]],
+  academicYear:["Academic Year","text"],startDate:["Start Date","date"],endDate:["End Date","date"],className:["Class","class"]
+ }},
+ results:{title:"Marks & Results",singular:"Result",fields:{
+  studentAdmissionNo:["Student Admission Number","text"],studentName:["Student Name","text"],
+  className:["Class","class"],exam:["Examination","text"],subject:["Subject","text"],
+  marks:["Marks Obtained","number"],outOf:["Total Marks","number"],grade:["Grade","text"],remarks:["Teacher's Remarks","textarea"]
+ }},
+ invoices:{title:"School Fees",singular:"Fee Invoice",fields:{
+  invoiceNo:["Invoice Number","text"],date:["Invoice Date","date"],studentAdmissionNo:["Student Admission Number","text"],
+  studentName:["Student Name","text"],className:["Class","class"],term:["Term","select",["Term 1","Term 2","Term 3"]],
+  academicYear:["Academic Year","text"],description:["Description","text"],amount:["Amount (UGX)","number"],
+  dueDate:["Due Date","date"],status:["Status","select",["Unpaid","Part Paid","Paid"]]
+ }},
+ payments:{title:"Payments & Receipts",singular:"Payment",fields:{
+  receiptNo:["Receipt Number","text"],date:["Payment Date","date"],studentAdmissionNo:["Student Admission Number","text"],
+  studentName:["Student Name","text"],invoiceNo:["Invoice Number","text"],amount:["Amount Paid (UGX)","number"],
+  method:["Payment Method","select",["Cash","Mobile Money","Bank","Other"]],
+  reference:["Transaction Reference","text"],receivedBy:["Received By","text"],notes:["Notes","textarea"]
+ }},
+ expenses:{title:"Expenses",singular:"Expense",fields:{
+  date:["Date","date"],category:["Category","text"],description:["Description","text"],
+  amount:["Amount (UGX)","number"],paidTo:["Paid To","text"],paymentMethod:["Payment Method","text"],reference:["Reference","text"]
+ }},
+ payroll:{title:"Payroll",singular:"Payroll Record",fields:{
+  month:["Month","month"],staffNo:["Staff Number","text"],staffName:["Staff Name","text"],
+  basicSalary:["Basic Salary (UGX)","number"],allowances:["Allowances (UGX)","number"],
+  deductions:["Deductions (UGX)","number"],netPay:["Net Pay (UGX)","number"],
+  paymentDate:["Payment Date","date"],status:["Status","select",["Pending","Paid"]]
+ }},
+ inventory:{title:"Inventory",singular:"Inventory Item",fields:{
+  item:["Item Name","text"],category:["Category","text"],quantity:["Quantity","number"],unit:["Unit","text"],
+  purchaseDate:["Purchase Date","date"],unitCost:["Unit Cost (UGX)","number"],supplier:["Supplier","text"],
+  condition:["Condition","select",["Good","Needs Repair","Damaged"]]
+ }},
+ transport:{title:"Transport",singular:"Transport Record",fields:{
+  vehicle:["Vehicle / Route","text"],registration:["Registration Number","text"],driver:["Driver Name","text"],
+  driverPhone:["Driver Phone","tel"],studentAdmissionNo:["Student Admission Number","text"],
+  studentName:["Student Name","text"],pickupPoint:["Pickup Point","text"],fee:["Transport Fee (UGX)","number"],
+  status:["Status","select",["Active","Inactive"]]
+ }},
+ meals:{title:"Meals",singular:"Meal Record",fields:{
+  date:["Date","date"],meal:["Meal","text"],menu:["Menu / Food Items","textarea"],
+  quantity:["Quantity / Portions","number"],cost:["Cost (UGX)","number"],supplier:["Supplier","text"],notes:["Notes","textarea"]
+ }}
+};
+
+function freshDB(){
+ const records={};Object.keys(schema).forEach(k=>records[k]=[]);
+ return {school:{name:"SAMLAX KINDERGARTEN",motto:"Train Up a Child",address:"",phone:"",email:"",headteacher:"",logo:""},records};
+}
+function uid(){return "R"+Date.now().toString(36)+Math.random().toString(36).slice(2,8)}
+function esc(v){return String(v??"").replace(/[&<>"']/g,c=>({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]))}
+function money(v){return "UGX "+Number(v||0).toLocaleString("en-UG")}
+function today(){return new Date().toISOString().slice(0,10)}
+function toast(message){
+ const t=document.getElementById("toast");t.textContent=message;t.style.display="block";
+ clearTimeout(toast.timer);toast.timer=setTimeout(()=>t.style.display="none",3000);
+}
+
+/* PASSWORD-BASED ENCRYPTION */
+function bytesToBase64(bytes){
+ let binary="";bytes.forEach(b=>binary+=String.fromCharCode(b));return btoa(binary);
+}
+function base64ToBytes(text){
+ const binary=atob(text);return Uint8Array.from(binary,c=>c.charCodeAt(0));
+}
+async function deriveKey(password,salt){
+ const material=await crypto.subtle.importKey("raw",new TextEncoder().encode(password),"PBKDF2",false,["deriveKey"]);
+ return crypto.subtle.deriveKey({name:"PBKDF2",salt,iterations:PBKDF2_ROUNDS,hash:"SHA-256"},material,{name:"AES-GCM",length:256},false,["encrypt","decrypt"]);
+}
+async function encryptObject(object,password){
+ const salt=crypto.getRandomValues(new Uint8Array(16));
+ const iv=crypto.getRandomValues(new Uint8Array(12));
+ const key=await deriveKey(password,salt);
+ const plain=new TextEncoder().encode(JSON.stringify(object));
+ const cipher=await crypto.subtle.encrypt({name:"AES-GCM",iv},key,plain);
+ return {version:3,salt:bytesToBase64(salt),iv:bytesToBase64(iv),cipher:bytesToBase64(new Uint8Array(cipher))};
+}
+async function decryptObject(payload,password){
+ const salt=base64ToBytes(payload.salt),iv=base64ToBytes(payload.iv),cipher=base64ToBytes(payload.cipher);
+ const key=await deriveKey(password,salt);
+ const plain=await crypto.subtle.decrypt({name:"AES-GCM",iv},key,cipher);
+ return JSON.parse(new TextDecoder().decode(plain));
+}
+async function saveDB(){
+ if(!db)return;
+ try{
+  if(activePassword){
+   localStorage.setItem(STORAGE_KEY,JSON.stringify(await encryptObject(db,activePassword)));
+  }else{
+   localStorage.setItem(STORAGE_KEY,JSON.stringify({version:4,plain:true,data:db}));
+  }
+ }catch(e){alert("Could not save the school records. Export a backup and check browser storage.");}
+}
+function refreshLockButton(){
+ document.getElementById("lockButton").style.display=activePassword?"":"none";
+}
+function openApp(){
+ document.getElementById("loginScreen").style.display="none";
+ document.getElementById("app").style.display="block";
+ refreshLockButton();updateBrand();go("dashboard");
+}
+async function startUp(){
+ let stored=null;
+ try{stored=localStorage.getItem(STORAGE_KEY)}catch(e){}
+ if(!stored){db=freshDB();activePassword=null;await saveDB();openApp();return}
+ try{
+  const payload=JSON.parse(stored);
+  if(payload.plain&&payload.data){db=payload.data;activePassword=null;openApp();return}
+ }catch(e){}
+ document.getElementById("loginScreen").style.display="flex";
+}
+async function login(e){
+ e.preventDefault();
+ const username=document.getElementById("loginUser").value.trim();
+ const password=document.getElementById("loginPassword").value;
+ const error=document.getElementById("loginError");
+ error.textContent="";
+ if(username!==DEFAULT_USER){error.textContent="Incorrect administrator username.";return}
+ if(!window.crypto||!crypto.subtle){error.textContent="This browser does not support the required encryption. Please use a recent version of Chrome or Edge.";return}
+ try{
+  const payload=JSON.parse(localStorage.getItem(STORAGE_KEY));
+  db=await decryptObject(payload,password);
+  activePassword=password;
+  document.getElementById("loginPassword").value="";
+  openApp();
+ }catch(err){
+  db=null;activePassword=null;
+  error.textContent="Login failed. The password may be incorrect, or the encrypted data may be damaged.";
+ }
+}
+function logout(){
+ if(!activePassword)return;
+ db=null;activePassword=null;
+ document.getElementById("app").style.display="none";
+ document.getElementById("loginScreen").style.display="flex";
+ document.getElementById("loginPassword").value="";
+ document.getElementById("loginError").textContent="";
+}
+function updateBrand(){
+ document.getElementById("headerSchool").textContent=db.school.name;
+ document.getElementById("headerMotto").textContent=db.school.motto.toUpperCase();
+ document.getElementById("headerDate").textContent=new Date().toLocaleDateString("en-UG",{weekday:"long",year:"numeric",month:"long",day:"numeric"});
+ const fallback=logoFallback();
+ const logo=db.school.logo||fallback;
+ document.getElementById("headerLogo").src=logo;
+ document.getElementById("loginLogo").src=logo;
+ try{if(db.school.logo)localStorage.setItem(LOGO_KEY,db.school.logo);else localStorage.removeItem(LOGO_KEY)}catch(e){}
+}
+function logoFallback(){
+ const svg='<svg xmlns="http://www.w3.org/2000/svg" width="100" height="100"><rect width="100" height="100" rx="14" fill="#1765a8"/><text x="50" y="68" font-size="65" text-anchor="middle" fill="white" font-family="Arial">S</text></svg>';
+ return "data:image/svg+xml;base64,"+btoa(svg);
+}
+
+/* PHOTO AND LOGO COMPRESSION */
+function compressImage(file,maxDimension=700,quality=.76,keepAlpha=false){
+ return new Promise((resolve,reject)=>{
+  if(!file||!file.type.startsWith("image/")){reject(new Error("Please select an image file."));return}
+  const reader=new FileReader();
+  reader.onerror=()=>reject(new Error("Could not read the selected image."));
+  reader.onload=()=>{
+   const img=new Image();
+   img.onerror=()=>reject(new Error("This image could not be opened."));
+   img.onload=()=>{
+    let w=img.width,h=img.height;
+    const scale=Math.min(1,maxDimension/Math.max(w,h));
+    w=Math.max(1,Math.round(w*scale));h=Math.max(1,Math.round(h*scale));
+    const canvas=document.createElement("canvas");canvas.width=w;canvas.height=h;
+    const ctx=canvas.getContext("2d");
+    if(keepAlpha&&/png|svg|webp|gif/.test(file.type)){
+     ctx.drawImage(img,0,0,w,h);
+     const png=canvas.toDataURL("image/png");
+     if(png.length<=550000){resolve({data:png,width:w,height:h,bytes:Math.round(png.length*.75)});return}
+     ctx.clearRect(0,0,w,h);
+    }
+    ctx.fillStyle="#ffffff";ctx.fillRect(0,0,w,h);
+    ctx.drawImage(img,0,0,w,h);
+    let q=quality,data=canvas.toDataURL("image/jpeg",q);
+    while(data.length>550000&&q>.38){q-=.08;data=canvas.toDataURL("image/jpeg",q)}
+    resolve({data,width:w,height:h,bytes:Math.round(data.length*.75)});
+   };
+   img.src=reader.result;
+  };
+  reader.readAsDataURL(file);
+ });
+}
+async function handleStudentPhoto(event){
+ const file=event.target.files[0];if(!file)return;
+ if(file.size>MAX_PHOTO_BYTES){alert("Choose a photograph smaller than 3 MB before compression.");event.target.value="";return}
+ try{
+  const result=await compressImage(file,700,.76);
+  document.getElementById("studentPhotoData").value=result.data;
+  const preview=document.getElementById("studentPhotoPreview");
+  preview.src=result.data;preview.style.display="block";
+  document.getElementById("photoSizeInfo").textContent="Compressed image: "+Math.round(result.bytes/1024)+" KB";
+ }catch(e){alert(e.message)}
+}
+async function handleLogo(event){
+ const file=event.target.files[0];if(!file)return;
+ try{
+  const result=await compressImage(file,500,.8,true);
+  db.school.logo=result.data;await saveDB();updateBrand();toast("School logo updated.");
+  if(currentPage==="settings")renderPage();
+  event.target.value="";
+ }catch(e){alert(e.message)}
+}
+
+/* NAVIGATION */
+document.getElementById("navigation").addEventListener("click",e=>{
+ const b=e.target.closest("button[data-page]");if(b)go(b.dataset.page);
+});
+function go(page){
+ currentPage=page;
+ document.querySelectorAll("#navigation button").forEach(b=>b.classList.toggle("active",b.dataset.page===page));
+ renderPage();
+}
+function renderPage(){
+ if(schema[currentPage])return renderModule(currentPage);
+ if(currentPage==="dashboard")return renderDashboard();
+ if(currentPage==="reports")return renderReports();
+ if(currentPage==="settings")return renderSettings();
+ if(currentPage==="security")return renderSecurity();
+ if(currentPage==="backup")return renderBackup();
+ if(currentPage==="photoIntake")return renderPhotoIntake();
+}
+
+/* DASHBOARD */
+function stat(label,value){return `<div class="stat"><span>${esc(label)}</span><strong>${esc(value)}</strong></div>`}
+function renderDashboard(){
+ const students=db.records.students,staff=db.records.staff;
+ const invoiced=db.records.invoices.reduce((a,r)=>a+Number(r.amount||0),0);
+ const paid=db.records.payments.reduce((a,r)=>a+Number(r.amount||0),0);
+ document.getElementById("main").innerHTML=`
+ <h2>School Dashboard</h2><div class="subtitle">${esc(db.school.name)} · Management overview</div>
+ <div class="cards">
+ ${stat("Total Students",students.length)}
+ ${stat("Active Students",students.filter(s=>!s.status||s.status==="Active").length)}
+ ${stat("Classes",db.records.classes.filter(c=>c.status!=="Inactive").length)}
+ ${stat("Staff Members",staff.length)}
+ ${stat("Fees Invoiced",money(invoiced))}
+ ${stat("Fees Received",money(paid))}
+ ${stat("Outstanding Fees",money(invoiced-paid))}
+ </div>
+ <div class="panel"><div class="panel-head"><h3>Quick Actions</h3></div>
+ <div class="toolbar">
+ <button class="primary" onclick="openForm('students')">+ Admit Student</button>
+ <button class="secondary" onclick="openForm('classes')">+ Add Class</button>
+ <button class="secondary" onclick="openForm('attendance')">+ Attendance</button>
+ <button class="secondary" onclick="openForm('invoices')">+ Fee Invoice</button>
+ <button class="secondary" onclick="go('photoIntake')">Student Photos</button>
+ </div></div>
+ <div class="panel"><div class="panel-head"><h3>Recently Registered Students</h3><button class="secondary" onclick="go('students')">View Students</button></div>
+ ${buildTable("students",students.slice(-5).reverse())}</div>
+ <div class="panel"><div class="panel-head"><h3>School Identity</h3><button class="secondary" onclick="go('settings')">School Settings</button></div>
+ <p><b>${esc(db.school.name)}</b></p><p>${esc(db.school.motto)}</p><p>${esc(db.school.address||"Address not entered")}</p></div>`;
+}
+
+/* CLASSES */
+function activeClasses(){return db.records.classes.filter(c=>c.status!=="Inactive")}
+function classOptions(selected=""){
+ let html='<option value="">Select a class</option>';
+ activeClasses().forEach(c=>{
+  const label=c.name+(c.stream?" - "+c.stream:"");
+  html+=`<option value="${esc(c.name)}" ${c.name===selected?"selected":""}>${esc(label)}</option>`;
+ });
+ if(selected&&!activeClasses().some(c=>c.name===selected))html+=`<option selected value="${esc(selected)}">${esc(selected)} (existing)</option>`;
+ html+='<option value="__ADD_CLASS__">＋ Add a new class...</option>';
+ return html;
+}
+function handleClassChoice(select){
+ if(select.value!=="__ADD_CLASS__")return;
+ const name=prompt("Enter the new class name, for example Baby Class, Middle Class or Top Class:");
+ if(!name||!name.trim()){select.value="";return}
+ const clean=name.trim();
+ const found=db.records.classes.find(c=>c.name.toLowerCase()===clean.toLowerCase());
+ if(found){select.innerHTML=classOptions(found.name);select.value=found.name;alert("This class already exists and has been selected.");return}
+ db.records.classes.push({id:uid(),name:clean,stream:"",teacher:"",capacity:"",room:"",academicYear:String(new Date().getFullYear()),status:"Active"});
+ saveDB();
+ select.innerHTML=classOptions(clean);select.value=clean;
+ toast("New class added.");
+}
+
+/* MODULE TABLES */
+function renderModule(key){
+ const cfg=schema[key];
+ document.getElementById("main").innerHTML=`
+ <h2>${esc(cfg.title)}</h2><div class="subtitle">Manage ${esc(cfg.title.toLowerCase())} records</div>
+ <div class="panel"><div class="panel-head"><h3>${esc(cfg.title)} Register</h3>
+ <div class="toolbar no-print">
+ <input id="searchBox" placeholder="Search records..." oninput="filterTable('${key}')">
+ <button class="primary" onclick="openForm('${key}')">+ Add ${esc(cfg.singular)}</button>
+ <button class="secondary" onclick="printCurrent('${key}')">Print Register</button>
+ </div></div><div id="tableArea">${buildTable(key,db.records[key])}</div></div>`;
+}
+function buildTable(key,records){
+ const cfg=schema[key],fields=Object.keys(cfg.fields);
+ if(!records.length)return '<div class="empty">No records have been entered yet.</div>';
+ const visible=(cfg.tableFields||fields.filter(f=>f!=="photo")).slice(0,7);
+ let html=`<div class="table-wrap"><table><thead><tr>${key==="students"?"<th>Photo</th>":""}${visible.map(f=>`<th>${esc(cfg.fields[f][0])}</th>`).join("")}<th class="no-print">Actions</th></tr></thead><tbody>`;
+ records.forEach(r=>{
+  html+="<tr>";
+  if(key==="students")html+=`<td>${r.photo?`<img src="${r.photo}" style="width:42px;height:48px;object-fit:cover;border-radius:5px">`:"—"}</td>`;
+  visible.forEach(f=>html+=`<td>${esc(r[f]||"—")}</td>`);
+  html+=`<td class="no-print">
+   <button class="small secondary" onclick="editRecord('${key}','${r.id}')">Edit</button>
+   <button class="small secondary" onclick="printOne('${key}','${r.id}')">Print</button>`;
+  if(key==="students")html+=`
+   <button class="small success" onclick="reportCard('${r.id}')">Report Card</button>
+   <button class="small secondary" onclick="promoteStudent('${r.id}')">Promote</button>`;
+  if(key==="payments")html+=`<button class="small success" onclick="printReceipt('${r.id}')">Receipt</button>`;
+  html+=`<button class="small danger" onclick="deleteRecord('${key}','${r.id}')">Delete</button></td></tr>`;
+ });
+ return html+"</tbody></table></div>";
+}
+function filterTable(key){
+ const q=(document.getElementById("searchBox")?.value||"").toLowerCase();
+ const records=db.records[key].filter(r=>Object.entries(r).some(([k,v])=>k!=="photo"&&String(v??"").toLowerCase().includes(q)));
+ document.getElementById("tableArea").innerHTML=buildTable(key,records);
+}
+
+/* FORMS */
+function openForm(key,recordId=null){
+ editing=recordId?{key,id:recordId}:null;
+ const cfg=schema[key],record=recordId?db.records[key].find(r=>r.id===recordId)||{}:{};
+ document.getElementById("modalTitle").textContent=(recordId?"Edit ":"Add ")+cfg.singular;
+ document.getElementById("formFields").innerHTML=Object.entries(cfg.fields).map(([name,def])=>{
+  const [label,type,choices]=def,value=record[name]??"";
+  let control="";
+  if(type==="select"){
+   control=`<select name="${name}" ${name==="studentType"?'onchange="applyStudentType()"':""}><option value="">Select</option>${choices.map(c=>`<option value="${esc(c)}" ${value===c?"selected":""}>${esc(c)}</option>`).join("")}</select>`;
+  }else if(type==="class"){
+   control=`<select name="${name}" onchange="handleClassChoice(this)">${classOptions(value)}</select>`;
+  }else if(type==="image"){
+   control=`<input type="hidden" name="${name}" id="studentPhotoData" value="${esc(value)}">
+   <input type="file" accept="image/*" onchange="handleStudentPhoto(event)">
+   <img id="studentPhotoPreview" class="photo-preview" src="${esc(value)}" style="${value?"":"display:none"}">
+   <div id="photoSizeInfo" class="muted">Select a student photo. The system compresses it automatically.</div>
+   <div class="muted">JPEG output · Resized to a maximum 700 pixels · Smaller file size for storage</div>`;
+  }else if(type==="textarea"){
+   control=`<textarea name="${name}" rows="3">${esc(value)}</textarea>`;
+  }else{
+   control=`<input name="${name}" type="${type}" value="${esc(value)}" ${type==="number"?'min="0" step="any"':""}>`;
+  }
+  const scope=def[3]||"";
+  const heading=(key==="students"&&studentSections[name])?`<div class="field full form-section" data-scope="${studentSections[name][1]}"><h4>${esc(studentSections[name][0])}</h4></div>`:"";
+  return heading+`<div class="field ${type==="textarea"||type==="image"?"full":""}" data-scope="${scope}"><label>${esc(label)}</label>${control}</div>`;
+ }).join("");
+ if(key==="students"){
+  const sel=document.querySelector('#formFields [name="studentType"]');
+  if(sel&&!recordId&&!sel.value)sel.value="New Admission";
+  applyStudentType();
+ }
+ document.getElementById("modal").classList.add("show");
+}
+function applyStudentType(){
+ const sel=document.querySelector('#formFields [name="studentType"]');if(!sel)return;
+ const v=sel.value;
+ document.querySelectorAll("#formFields [data-scope]").forEach(el=>{
+  const sc=el.dataset.scope;
+  const show=!sc||!v||(sc==="new"&&v==="New Admission")||(sc==="continuing"&&v==="Continuing Student");
+  el.style.display=show?"":"none";
+ });
+}
+function closeModal(){document.getElementById("modal").classList.remove("show");editing=null}
+async function saveRecord(e){
+ e.preventDefault();
+ const key=editing?.key||currentPage;
+ const data={};new FormData(e.target).forEach((v,k)=>data[k]=String(v).trim());
+ if(key==="classes"){
+  if(!data.name){alert("Enter a class name.");return}
+  const duplicate=db.records.classes.find(c=>c.name.toLowerCase()===data.name.toLowerCase()&&c.id!==editing?.id);
+  if(duplicate){alert("That class already exists. Choose another name.");return}
+ }
+ if(key==="students"){
+  if(!data.firstName){alert("Enter the student's first name.");return}
+  if(!data.admissionNo)data.admissionNo=nextNumber("STU",db.records.students,"admissionNo");
+ }
+ if(key==="invoices"&&!data.invoiceNo)data.invoiceNo=nextNumber("INV",db.records.invoices,"invoiceNo");
+ if(key==="payments"&&!data.receiptNo)data.receiptNo=nextNumber("RCT",db.records.payments,"receiptNo");
+ if(key==="staff"&&!data.staffNo)data.staffNo=nextNumber("STF",db.records.staff,"staffNo");
+ if(editing){
+  const i=db.records[key].findIndex(r=>r.id===editing.id);
+  if(i>=0)db.records[key][i]={...db.records[key][i],...data};
+ }else{
+  db.records[key].push({id:uid(),createdAt:new Date().toISOString(),...data});
+ }
+ await saveDB();closeModal();renderPage();toast("Record saved.");
+}
+function nextNumber(prefix,records,field){return prefix+"-"+String(records.length+1).padStart(4,"0")}
+function editRecord(key,idValue){openForm(key,idValue)}
+async function deleteRecord(key,idValue){
+ if(!confirm("Delete this record? This cannot be undone unless you have a backup."))return;
+ db.records[key]=db.records[key].filter(r=>r.id!==idValue);
+ await saveDB();renderPage();toast("Record deleted.");
+}
+async function promoteStudent(idValue){
+ const student=db.records.students.find(s=>s.id===idValue);
+ const classes=activeClasses();
+ if(!classes.length){alert("Add classes before promoting students.");go("classes");return}
+ const answer=prompt("Enter the number of the student's new class:\n"+classes.map((c,i)=>(i+1)+". "+c.name+(c.stream?" - "+c.stream:"")).join("\n"));
+ if(answer===null)return;
+ const index=Number(answer)-1;
+ if(!Number.isInteger(index)||index<0||index>=classes.length){alert("Invalid class selection.");return}
+ student.className=classes[index].name;
+ await saveDB();renderPage();toast("Student promoted.");
+}
+
+/* PRINTING */
+function schoolHeading(){
+ return `<div style="text-align:center;border-bottom:2px solid #173e69;padding-bottom:12px;margin-bottom:18px">
+ <h1 style="margin:0;color:#173e69">${esc(db.school.name)}</h1>
+ <h3 style="margin:5px">${esc(db.school.motto)}</h3>
+ <div>${esc(db.school.address||"")}</div><div>${esc(db.school.phone||"")} ${esc(db.school.email||"")}</div></div>`;
+}
+function printHtml(title,content){
+ const w=window.open("","_blank");
+ if(!w){alert("Allow pop-ups for this file to print documents.");return}
+ w.document.write(`<!DOCTYPE html><html><head><title>${esc(title)}</title><style>
+ body{font-family:Arial,sans-serif;padding:25px;color:#222}h1,h2,h3{text-align:center}
+ table{width:100%;border-collapse:collapse;margin-top:15px;font-size:12px}
+ th,td{border:1px solid #777;padding:7px;text-align:left}th{background:#eee}
+ .line{margin-top:35px;border-top:1px solid #333;width:220px;padding-top:5px}
+ </style></head><body>${schoolHeading()}<h2>${esc(title)}</h2>${content}
+ <p style="margin-top:35px;font-size:11px;text-align:center">Samlax Kindergarten Management System</p>
+ <script>window.onload=()=>window.print();<\/script></body></html>`);
+ w.document.close();
+}
+function printableTable(key,records){
+ const fields=(schema[key].printFields||Object.keys(schema[key].fields)).filter(f=>f!=="photo");
+ return `<table><thead><tr>${fields.map(f=>`<th>${esc(schema[key].fields[f][0])}</th>`).join("")}</tr></thead><tbody>
+ ${records.map(r=>`<tr>${fields.map(f=>`<td>${esc(r[f]||"")}</td>`).join("")}</tr>`).join("")}</tbody></table>`;
+}
+function printCurrent(key){printHtml(schema[key].title,printableTable(key,db.records[key]))}
+function printOne(key,idValue){
+ const r=db.records[key].find(x=>x.id===idValue);if(!r)return;
+ if(key==="students")return printAdmission(idValue);
+ const rows=Object.entries(schema[key].fields).filter(([f])=>f!=="photo").map(([f,d])=>`<tr><th>${esc(d[0])}</th><td>${esc(r[f]||"—")}</td></tr>`).join("");
+ printHtml(schema[key].singular+" Record",`<table>${rows}</table>`);
+}
+function printAdmission(idValue){
+ const s=db.records.students.find(x=>x.id===idValue);if(!s)return;
+ const photo=s.photo?`<div style="text-align:center;margin:12px"><img src="${s.photo}" style="width:120px;height:140px;object-fit:cover;border:1px solid #555"></div>`:"";
+ let rows="";
+ Object.entries(schema.students.fields).forEach(([f,d])=>{
+  if(f==="photo")return;
+  const sec=studentSections[f];
+  if(sec&&(!sec[1]||sec[1]===(s.studentType==="Continuing Student"?"continuing":"new")))rows+=`<tr><th colspan="2" style="background:#edf4fb;text-align:center">${esc(sec[0])}</th></tr>`;
+  const sc=d[3]||"";
+  if(sc&&s.studentType&&!((sc==="new"&&s.studentType==="New Admission")||(sc==="continuing"&&s.studentType==="Continuing Student")))return;
+  rows+=`<tr><th>${esc(d[0])}</th><td>${esc(s[f]||"")}</td></tr>`;
+ });
+ printHtml("Student Admission Form",`${photo}<table>${rows}</table><div class="line">Parent / Guardian Signature</div><div class="line">Headteacher Signature</div>`);
+}
+function reportCard(idValue){
+ const s=db.records.students.find(x=>x.id===idValue);if(!s)return;
+ const results=db.records.results.filter(r=>r.studentAdmissionNo===s.admissionNo);
+ const rows=results.map(r=>`<tr><td>${esc(r.exam)}</td><td>${esc(r.subject)}</td><td>${esc(r.marks)}</td><td>${esc(r.outOf)}</td><td>${esc(r.grade)}</td><td>${esc(r.remarks)}</td></tr>`).join("");
+ const photo=s.photo?`<div style="text-align:center"><img src="${s.photo}" style="width:100px;height:120px;object-fit:cover"></div>`:"";
+ printHtml("Student Report Card",`${photo}<p><b>Student:</b> ${esc(s.firstName)} ${esc(s.lastName)}</p>
+ <p><b>Admission Number:</b> ${esc(s.admissionNo)} &nbsp; <b>Class:</b> ${esc(s.className)}</p>
+ <table><tr><th>Examination</th><th>Subject</th><th>Marks</th><th>Out Of</th><th>Grade</th><th>Remarks</th></tr>${rows||"<tr><td colspan='6'>No results entered</td></tr>"}</table>
+ <div class="line">Class Teacher</div><div class="line">Headteacher</div><div class="line">Parent / Guardian</div>`);
+}
+function printReceipt(idValue){
+ const p=db.records.payments.find(x=>x.id===idValue);if(!p)return;
+ printHtml("Official Payment Receipt",`<h3>PAYMENT RECEIPT</h3>
+ <p><b>Receipt Number:</b> ${esc(p.receiptNo)}</p><p><b>Date:</b> ${esc(p.date)}</p>
+ <p><b>Student:</b> ${esc(p.studentName)}</p><p><b>Admission Number:</b> ${esc(p.studentAdmissionNo)}</p>
+ <p><b>Invoice:</b> ${esc(p.invoiceNo)}</p><h2>${money(p.amount)}</h2>
+ <p><b>Payment Method:</b> ${esc(p.method)}</p><p><b>Reference:</b> ${esc(p.reference)}</p>
+ <div class="line">Cashier Signature</div>`);
+}
+
+/* STAFF PHOTO SUBMISSION AREA */
+function renderPhotoIntake(){
+ document.getElementById("main").innerHTML=`
+ <h2>Staff Photo Submissions</h2>
+ <div class="subtitle">Import student photographs supplied by teachers and staff</div>
+ <div class="notice"><b>How this works:</b> Staff can transfer photographs to the school computer using a USB drive, memory card or an approved file-transfer method. The administrator imports the photos here, matches each image to a student's admission number, and saves it to that student's profile. This application is offline and does not receive photos remotely.</div>
+ <div class="panel">
+  <div class="panel-head"><h3>Import Multiple Student Photographs</h3></div>
+  <div class="field"><label>Select photographs from the computer</label>
+   <input id="photoFiles" type="file" accept="image/*" multiple onchange="preparePhotoQueue(event)">
+  </div>
+  <p class="muted">Images are compressed automatically before they are attached to student records. Maximum original file size: 3 MB per image.</p>
+ </div>
+ <div class="panel">
+  <div class="panel-head"><h3>Photo Submission Queue</h3><span class="badge" id="queueCount">${photoQueue.length} photos</span></div>
+  <div id="photoQueueList">${renderQueueHTML()}</div>
+ </div>`;
+}
+function renderQueueHTML(){
+ if(!photoQueue.length)return '<div class="empty">No photographs waiting for review.</div>';
+ return `<div class="table-wrap"><table><thead><tr><th>Photo</th><th>File Name</th><th>Assign Admission Number</th><th>Action</th></tr></thead><tbody>
+ ${photoQueue.map((p,i)=>`<tr><td><img src="${p.data}" style="width:48px;height:55px;object-fit:cover;border-radius:5px"></td>
+ <td>${esc(p.name)}<br><span class="muted">${Math.round(p.bytes/1024)} KB compressed</span></td>
+ <td><input id="photoAdmission${i}" placeholder="e.g. STU-0001"></td>
+ <td><button class="small primary" onclick="assignQueuedPhoto(${i})">Assign Photo</button><button class="small danger" onclick="removeQueuedPhoto(${i})">Remove</button></td></tr>`).join("")}
+ </tbody></table></div>`;
+}
+async function preparePhotoQueue(event){
+ const files=Array.from(event.target.files||[]);
+ if(!files.length)return;
+ for(const file of files){
+  if(!file.type.startsWith("image/"))continue;
+  if(file.size>MAX_PHOTO_BYTES){alert(file.name+" is larger than 3 MB and was skipped.");continue}
+  try{
+   const compressed=await compressImage(file,700,.76);
+   photoQueue.push({name:file.name,data:compressed.data,bytes:compressed.bytes});
+  }catch(e){alert(file.name+": "+e.message)}
+ }
+ renderPage();
+}
+async function assignQueuedPhoto(index){
+ const p=photoQueue[index];if(!p)return;
+ const input=document.getElementById("photoAdmission"+index);
+ const admission=(input?.value||"").trim();
+ if(!admission){alert("Enter the student's admission number.");return}
+ const student=db.records.students.find(s=>(s.admissionNo||"").toLowerCase()===admission.toLowerCase());
+ if(!student){alert("No student was found with that admission number. Check the number and try again.");return}
+ student.photo=p.data;
+ photoQueue.splice(index,1);
+ await saveDB();renderPage();toast("Photograph attached to "+student.firstName+".");
+}
+function removeQueuedPhoto(index){photoQueue.splice(index,1);renderPage()}
+
+/* REPORTS */
+function renderReports(){
+ const inv=db.records.invoices.reduce((a,r)=>a+Number(r.amount||0),0);
+ const paid=db.records.payments.reduce((a,r)=>a+Number(r.amount||0),0);
+ const balances=db.records.students.map(s=>{
+  const billed=db.records.invoices.filter(i=>i.studentAdmissionNo===s.admissionNo).reduce((a,r)=>a+Number(r.amount||0),0);
+  const received=db.records.payments.filter(p=>p.studentAdmissionNo===s.admissionNo).reduce((a,r)=>a+Number(r.amount||0),0);
+  return {s,billed,received,balance:billed-received};
+ });
+ document.getElementById("main").innerHTML=`
+ <h2>Reports & Printing</h2><div class="subtitle">School registers, financial summaries and printed records</div>
+ <div class="cards">${stat("Total Invoiced",money(inv))}${stat("Total Received",money(paid))}${stat("Outstanding",money(inv-paid))}${stat("Students",db.records.students.length)}</div>
+ <div class="panel"><div class="panel-head"><h3>Print School Registers</h3></div><div class="toolbar">
+ ${Object.keys(schema).map(k=>`<button class="secondary" onclick="printCurrent('${k}')">Print ${esc(schema[k].title)}</button>`).join("")}
+ </div></div>
+ <div class="panel"><div class="panel-head"><h3>Student Fee Balances</h3><button class="primary" onclick="printBalances()">Print Fee Balances</button></div>
+ <div class="table-wrap"><table><tr><th>Admission No.</th><th>Student</th><th>Class</th><th>Invoiced</th><th>Paid</th><th>Balance</th></tr>
+ ${balances.map(x=>`<tr><td>${esc(x.s.admissionNo)}</td><td>${esc(x.s.firstName)} ${esc(x.s.lastName)}</td><td>${esc(x.s.className)}</td><td>${money(x.billed)}</td><td>${money(x.received)}</td><td>${money(x.balance)}</td></tr>`).join("")}</table></div></div>
+ <div class="panel"><div class="panel-head"><h3>Attendance Summary</h3><button class="secondary" onclick="printCurrent('attendance')">Print Attendance</button></div>
+ <p>Attendance records: <b>${db.records.attendance.length}</b></p>
+ <p>Present: <b>${db.records.attendance.filter(a=>a.status==="Present").length}</b> · Absent: <b>${db.records.attendance.filter(a=>a.status==="Absent").length}</b></p></div>`;
+}
+function printBalances(){
+ const rows=db.records.students.map(s=>{
+  const a=db.records.invoices.filter(i=>i.studentAdmissionNo===s.admissionNo).reduce((x,r)=>x+Number(r.amount||0),0);
+  const b=db.records.payments.filter(p=>p.studentAdmissionNo===s.admissionNo).reduce((x,r)=>x+Number(r.amount||0),0);
+  return `<tr><td>${esc(s.admissionNo)}</td><td>${esc(s.firstName)} ${esc(s.lastName)}</td><td>${esc(s.className)}</td><td>${money(a)}</td><td>${money(b)}</td><td>${money(a-b)}</td></tr>`;
+ }).join("");
+ printHtml("Student Fee Balances",`<table><tr><th>Admission No.</th><th>Student</th><th>Class</th><th>Invoiced</th><th>Paid</th><th>Balance</th></tr>${rows}</table>`);
+}
+
+/* SCHOOL SETTINGS AND LOGO */
+function renderSettings(){
+ document.getElementById("main").innerHTML=`
+ <h2>School Settings</h2><div class="subtitle">School identity, contact details and branding</div>
+ <div class="panel"><h3>School Information</h3><form onsubmit="saveSettings(event)" style="margin-top:18px">
+ <div class="grid-form">
+ ${settingField("name","School Name",db.school.name)}
+ ${settingField("motto","School Motto",db.school.motto)}
+ ${settingField("address","School Address",db.school.address)}
+ ${settingField("phone","Phone Number",db.school.phone)}
+ ${settingField("email","Email Address",db.school.email)}
+ ${settingField("headteacher","Headteacher / Director",db.school.headteacher)}
+ </div><button class="primary">Save School Information</button></form></div>
+ <div class="panel"><h3>School Logo</h3><p class="muted">Upload your official school logo to replace the default S logo.</p>
+ <img class="logo-preview" src="${db.school.logo||logoFallback()}" alt="Current school logo">
+ <div class="field" style="margin-top:15px"><label>Choose New School Logo</label><input type="file" accept="image/*" onchange="handleLogo(event)"></div>
+ <button class="secondary" onclick="removeLogo()">Restore Default S Logo</button></div>`;
+}
+function settingField(name,label,value){
+ return `<div class="field"><label>${esc(label)}</label><input name="${name}" value="${esc(value||"")}"></div>`;
+}
+async function saveSettings(e){
+ e.preventDefault();new FormData(e.target).forEach((v,k)=>db.school[k]=String(v).trim());
+ await saveDB();updateBrand();renderPage();toast("School information saved.");
+}
+async function removeLogo(){
+ if(!confirm("Restore the default S logo?"))return;
+ db.school.logo="";await saveDB();updateBrand();renderPage();
+}
+
+/* SECURITY AND PASSWORD */
+function renderSecurity(){
+ const has=!!activePassword;
+ const passwordPanel=has?`
+ <div class="panel"><h3>Change Administrator Password</h3>
+ <div class="notice">Changing the password also re-encrypts the saved school database using the new password. Do not forget it: there is no password recovery service.</div>
+ <form onsubmit="changePassword(event)" style="margin-top:16px">
+ <div class="field"><label>Current Password</label><input type="password" name="oldPassword" required></div>
+ <div class="field"><label>New Password</label><input type="password" name="newPassword" minlength="10" required></div>
+ <div class="field"><label>Confirm New Password</label><input type="password" name="confirmPassword" minlength="10" required></div>
+ <button class="primary">Change Password and Re-encrypt Data</button></form></div>
+ <div class="panel"><h3>Remove Password</h3>
+ <p class="muted">Removing the password lets anyone who opens this file on this computer see the school records.</p>
+ <form onsubmit="removePassword(event)" style="margin-top:12px">
+ <div class="field"><label>Current Password</label><input type="password" name="oldPassword" required></div>
+ <button class="secondary">Remove Password</button></form></div>`:`
+ <div class="panel"><h3>Set Administrator Password</h3>
+ <div class="notice"><b>No password is set.</b> The system opens straight away and anyone using this computer can see the records. Set a password to lock the system and encrypt the school database. Do not forget it: there is no password recovery service.</div>
+ <form onsubmit="setPassword(event)" style="margin-top:16px">
+ <div class="field"><label>New Password (at least 10 characters)</label><input type="password" name="newPassword" minlength="10" autocomplete="new-password" required></div>
+ <div class="field"><label>Confirm Password</label><input type="password" name="confirmPassword" minlength="10" autocomplete="new-password" required></div>
+ <button class="primary">Set Password and Encrypt Data</button></form></div>`;
+ document.getElementById("main").innerHTML=`
+ <h2>Security Centre</h2><div class="subtitle">Administrator access and encryption controls</div>
+ ${passwordPanel}
+ <div class="panel"><h3>Security Information</h3>
+ <p>Password status: <b>${has?"Set (system locks and data is encrypted)":"Not set (system opens without a password)"}</b></p>
+ <p>Encryption when a password is set: AES-256-GCM with PBKDF2 (SHA-256) key derivation</p>
+ <p>Storage: this browser's local storage on this computer</p>
+ <p>Administrator username when locked: <b>Admin</b></p>
+ <p class="muted">No password is stored in the HTML file. Protect the Windows user account and keep backups secure.</p></div>`;
+}
+async function setPassword(e){
+ e.preventDefault();
+ const fd=new FormData(e.target),next=fd.get("newPassword"),confirmPassword=fd.get("confirmPassword");
+ if(!window.crypto||!crypto.subtle){alert("This browser does not support the required encryption. Please use a recent version of Chrome or Edge.");return}
+ if(next!==confirmPassword){alert("The passwords do not match.");return}
+ if(next.length<10){alert("Use at least 10 characters for the password.");return}
+ try{
+  activePassword=next;await saveDB();
+  refreshLockButton();toast("Password set and school data encrypted.");renderPage();
+ }catch(err){activePassword=null;alert("Could not set the password. Your records are unchanged.")}
+}
+async function removePassword(e){
+ e.preventDefault();
+ const old=new FormData(e.target).get("oldPassword");
+ if(old!==activePassword){alert("Current password is incorrect.");return}
+ if(!confirm("Remove the password? The system will open without one and records will no longer be encrypted."))return;
+ activePassword=null;await saveDB();
+ refreshLockButton();toast("Password removed.");renderPage();
+}
+async function changePassword(e){
+ e.preventDefault();
+ const fd=new FormData(e.target),old=fd.get("oldPassword"),next=fd.get("newPassword"),confirmPassword=fd.get("confirmPassword");
+ if(old!==activePassword){alert("Current password is incorrect.");return}
+ if(next!==confirmPassword){alert("The new passwords do not match.");return}
+ if(next.length<10){alert("Use at least 10 characters for the new password.");return}
+ try{
+  const encrypted=await encryptObject(db,next);
+  localStorage.setItem(STORAGE_KEY,JSON.stringify(encrypted));
+  activePassword=next;toast("Password changed and school data re-encrypted.");renderPage();
+ }catch(err){alert("Password change failed. Your existing password remains active.");}
+}
+
+/* BACKUP AND RESTORE */
+function renderBackup(){
+ document.getElementById("main").innerHTML=`
+ <h2>Backup & Restore</h2><div class="subtitle">Protect the school database</div>
+ <div class="panel"><h3>Export Encrypted Backup</h3>
+ <p>Download a backup of the school database (encrypted if a password is set). Keep the backup file in a secure folder or USB drive.</p>
+ <button class="primary" onclick="exportBackup()">Download Encrypted Backup</button></div>
+ <div class="panel"><h3>Restore Encrypted Backup</h3>
+ <p>Select a backup created by this application. Restoring replaces the currently saved database.</p>
+ <input id="backupFile" type="file" accept=".json,application/json"><br><br>
+ <button class="secondary" onclick="restoreBackup()">Restore Backup</button></div>
+ <div class="panel"><h3>Data Protection</h3>
+ <p>If a password is set, records are encrypted before being saved in the browser. Keep your password private and keep backups secure.</p>
+ <p>Use a password-protected Windows account. Lock the computer when leaving it unattended.</p></div>`;
+}
+function exportBackup(){
+ const raw=localStorage.getItem(STORAGE_KEY);
+ if(!raw){alert("No encrypted backup is available.");return}
+ const blob=new Blob([raw],{type:"application/json"});
+ const url=URL.createObjectURL(blob),a=document.createElement("a");
+ a.href=url;a.download="Samlax_Encrypted_Backup_"+today()+".json";a.click();URL.revokeObjectURL(url);
+}
+async function restoreBackup(){
+ const file=document.getElementById("backupFile").files[0];
+ if(!file){alert("Choose a backup file first.");return}
+ try{
+  const payload=JSON.parse(await file.text());
+  let restored;
+  if(payload.plain&&payload.data){restored=payload.data}
+  else{
+   let pw=activePassword;
+   if(!pw){pw=prompt("This backup is encrypted. Enter the password it was created with:");if(pw===null)return}
+   restored=await decryptObject(payload,pw);
+  }
+  if(!restored.records||!restored.school)throw new Error("Invalid backup");
+  if(!confirm("Restoring replaces the current school records. Continue?"))return;
+  db=restored;await saveDB();updateBrand();go("dashboard");toast("Backup restored.");
+ }catch(err){alert("Could not restore this backup. Check that it is a valid Samlax backup and, if it is encrypted, that the password is correct.");}
+}
+
+/* START */
+let savedLogo=null;try{savedLogo=localStorage.getItem(LOGO_KEY)}catch(e){}
+document.getElementById("loginLogo").src=savedLogo||logoFallback();
+document.getElementById("headerLogo").src=savedLogo||logoFallback();
+startUp();
+</script>
+</body>
+</html>
